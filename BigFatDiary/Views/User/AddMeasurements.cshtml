@@ -1,0 +1,119 @@
+﻿@model BigFatDiary.Models.View.ViewUserMeasurements
+
+@{
+    ViewBag.Title = "AddMeasurements";
+}
+    <style>
+        th, td {
+            border-collapse: collapse;
+            border-right: solid;
+            border-top: solid;
+            border-bottom: solid;
+            border-color: dimgray;
+            padding: 5px;
+            max-width: 95px;
+            text-align: center;
+        }
+
+            th:first-child {
+                padding: 0px;
+            }
+
+            td:first-child {
+                padding: 0px;
+            }
+
+        #side {
+            overflow-y: scroll;
+            max-height: 600px;
+            height: 600px;
+            width: 200px;
+            float: left;
+            border-top: solid;
+            border-color: dimgray;
+            color: black;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+            #side::-webkit-scrollbar {
+                display: none;
+            }
+
+        #content {
+            overflow-y: scroll;
+            word-wrap: break-word;
+            max-height: 600px;
+            height: 600px;
+            width: 940px;
+            float: left;
+            border-top: solid;
+            border-left: solid;
+            border-color: dimgray;
+            color: black;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+            #content::-webkit-scrollbar {
+                display: none;
+            }
+
+        hr {
+            height: 2px;
+            margin-bottom: 2px;
+            background-color: dimgray;
+        }
+
+        textarea {
+            max-width: 728px;
+            width: 728px;
+        }
+    </style>
+
+<h1>User Measurements</h1>
+
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h3 style="padding-left:25px;">Enter the measurements you did today(previous entries for today will be overwritten)</h3>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Height, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Height, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Height, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Weight, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Weight, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Weight, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ActivityLevel, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ActivityLevel, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.ActivityLevel, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" style="font-size: larger;" />
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

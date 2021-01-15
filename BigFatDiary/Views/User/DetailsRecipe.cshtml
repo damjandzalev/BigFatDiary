@@ -1,0 +1,382 @@
+﻿@model BigFatDiary.Models.View.DetailsRecipe
+
+@{
+    ViewBag.Title = "Recipe";
+}
+
+<style>
+    textarea {
+        max-width: 728px;
+        max-height: none;
+        width: 728px;
+    }
+
+    th, td {
+        border-collapse: collapse;
+        border-right: solid;
+        border-top: solid;
+        border-bottom: solid;
+        border-color: dimgray;
+        padding: 5px;
+        color: black;
+    }
+
+        th:first-child {
+            padding: 0px;
+        }
+
+        td:first-child {
+            padding: 0px;
+        }
+
+    dt {
+        width: 120px;
+        text-align: right;
+        float: left;
+    }
+
+    dd {
+        width: 76px;
+        text-align: left;
+        float: left;
+        padding-left: 14px;
+    }
+
+    hr {
+        height: 2px;
+        margin-bottom: 2px;
+        background-color: dimgray;
+    }
+
+    .review {
+        background-color: lightgray;
+        margin: 10px 20px 10px 20px;
+        padding: 20px;
+        max-width: 940px;
+        border-color: darkgray;
+        border-right: solid;
+        border-width: 5px;
+    }
+
+    .review_element {
+        word-wrap: break-word;
+        padding-left: 10px;
+        margin-bottom: 10px
+    }
+
+    #side {
+        overflow-y: scroll;
+        max-height: 600px;
+        height: 600px;
+        width: 200px;
+        float: left;
+        border-top: solid;
+        border-color: dimgray;
+        color: black;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+        #side::-webkit-scrollbar {
+            display: none;
+        }
+
+    #content {
+        overflow-y: scroll;
+        word-wrap: break-word;
+        max-height: 600px;
+        height: 600px;
+        width: 940px;
+        float: left;
+        border-top: solid;
+        border-left: solid;
+        border-color: dimgray;
+        color: black;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+        #content::-webkit-scrollbar {
+            display: none;
+        }
+
+    .foodLink {
+        text-decoration: none;
+        text-decoration-line: none;
+        color: black;
+        text-align: center;
+    }
+
+        .foodLink :hover {
+            background-color: lightgray;
+            text-decoration: none;
+            text-decoration-line: none;
+            color: black;
+        }
+
+    a:hover {
+        text-decoration-line: none;
+    }
+</style>
+@if (Model != null)
+{
+    <h1>@Model.Name</h1>
+    <h3 style="padding-left: 25px;">by @Model.CreatedBy</h3>
+    <hr />
+
+    <div style="display:inline-block;">
+        <div style="width:1140px;height:33.6px">
+            <a href="/User/ListRecipes" style="float:left;padding-right:5px">
+                <div class="btn btn-default">
+                    Back to list
+                </div>
+            </a>
+            <form method="post" action="/User/Bookmark/@Model.Id" style="float:left;padding-right:5px">
+                @Html.AntiForgeryToken()
+                @if (Model.Bookmark)
+                {
+                    <input type="submit" class="btn btn-default" style="height:33.6px;float:left" value="Remove bookmark" />
+                }
+                else
+                {
+                    <input type="submit" class="btn btn-default" style="height:33.6px;float:left" value="Bookmark" />
+                }
+            </form>
+            <form method="post" action="/User/Eat/@Model.Id" style="float:right">
+                @Html.AntiForgeryToken()
+                <div>
+                    <input id="amount" name="amount" type="text" class="form-control" style="max-width: 320px; width: 320px; height: 33.6px; float: left" placeholder="Number of portions(decimal values accepted)" />
+                    <input id="eatSubmit" type="submit" class="btn btn-default" style="height:33.6px;float:left" value="Eat" />
+                </div>
+            </form>
+
+        </div>
+        <div id="side">
+            <h4 style="text-align:center;margin-bottom:10px;margin-top:10px">Ingredients</h4>
+            <table id="Ingredients" style="width:190px;padding-left:5px;padding-right:5px">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th style="width:95px;text-align:center">
+                            Ingredient
+                        </th>
+                        <th style="width:95px;text-align:center">
+                            Amount
+                        </th>
+                    </tr>
+                </thead>
+                <tbody style="">
+                    @{
+                        foreach (var i in Model.Ingredients)
+                        {
+                            <tr>
+                                <th></th>
+                                <td>
+                                    <a class="foodLink" href="/FoodStuffs/Details/@i.FoodStuff.Name">
+                                        <div style="text-decoration-line:none;">
+                                            @i.FoodStuff.Name
+                                        </div>
+                                    </a>
+                                </td>
+                                @switch (i.FoodStuff.MeasurementUnit)
+                                {
+                                    case BigFatDiary.Models.Data.Enumerations.MeasurementUnit.GRAM:
+                                        <td>@i.Amount g</td>
+                                        ;
+                                        break;
+                                    case BigFatDiary.Models.Data.Enumerations.MeasurementUnit.MILLILITER:
+                                        <td>@i.Amount ml</td>
+                                        ;
+                                        break;
+                                    case BigFatDiary.Models.Data.Enumerations.MeasurementUnit.PIECE:
+                                        <td>@i.Amount pcs</td>
+                                        ;
+                                        break;
+                                }
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+            <hr />
+
+            <div style="margin:auto">
+                <dl>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Portions)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Portions)
+                    </dd>
+                </dl>
+                <br />
+                <hr />
+                <h4 style="margin-top:10px;margin-bottom:10px;text-align:center">Information<br />per portion</h4>
+                <dl>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Calories)
+                    </dt>
+
+                    <dd>
+                        @Math.Round(Model.Calories, 2)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Proteins)
+                    </dt>
+
+                    <dd>
+                        @Math.Round(Model.Proteins, 2)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Carbohydrates)
+                    </dt>
+
+                    <dd>
+                        @Math.Round(Model.Carbohydrates, 2)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Fats)
+                    </dt>
+
+                    <dd>
+                        @Math.Round(Model.Fats, 2)
+                    </dd>
+                </dl>
+            </div>
+            <label>Grade:</label>
+            @if (Model.Grade > 0)
+            {
+                <div style="width:@(38 * Model.Grade)px;overflow:hidden;padding:0px;max-height:38px">
+                    <div style="display:block;width:190px;">
+                        <div style="width: 38px;height:38px;float:left;"><img style="width: 38px;height:38px;" src="~/Images/AcbK4z6qi.png" /></div>
+                        <div style="width: 38px;height:38px;float:left;"><img style="width: 38px;height:38px;" src="~/Images/AcbK4z6qi.png" /></div>
+                        <div style="width: 38px;height:38px;float:left;"><img style="width: 38px;height:38px;" src="~/Images/AcbK4z6qi.png" /></div>
+                        <div style="width: 38px;height:38px;float:left;"><img style="width: 38px;height:38px;" src="~/Images/AcbK4z6qi.png" /></div>
+                        <div style="width: 38px;height:38px;float:left;"><img style="width: 38px;height:38px;" src="~/Images/AcbK4z6qi.png" /></div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div id="content">
+            <div style="margin: 20px;width:900px">
+                @{
+                    foreach (string s in Model.Description.Split('\n'))
+                    {
+                        @s.ToString();
+                        <br />
+                    }
+                }
+            </div>
+            @if (!Model.CreatedBy.Equals(User.Identity.Name))
+            {
+                if (Model.AddReview != null)
+                {
+                    @Html.Partial("AddReview", Model.AddReview)
+                }
+                else
+                {
+                    @Html.Partial("AddReview", new BigFatDiary.Models.View.AddReview()
+                    {
+                        RecipeCreator = Model.CreatedBy,
+                        RecipeId = Model.Id,
+                        RecipeName = Model.Name
+                    })
+                }
+                if (Model.Reviews.Where(k => k.DiaryUser.Username.Equals(User.Identity.Name)).Any())
+                {
+                    <p style="color:darkgreen;width:320px;margin-left:100px;padding-left:4px;border-left:solid;border-bottom:solid;border-width:5px;border-color:dimgray;">
+                        You have already posted a review for this recipe.<br />Posting a new one will delete the previous one.
+                    </p>
+                }
+            }
+            @foreach (BigFatDiary.Models.Data.Review review in Model.Reviews.Where(k => k.DiaryUser.Username.Equals(User.Identity.Name)))
+            {
+                <label style="padding-left:25px;">
+                    Your review:
+                </label>
+                <div class="review">
+                    <label>From:</label> <br />
+                    <div class="review_element">
+                        @review.DiaryUser.Username
+                    </div>
+                    <hr />
+                    <label>Comment:</label> <br />
+                    <div class="review_element">
+                        @review.Comment
+                    </div>
+                    <hr />
+                    <label>Grade:</label>
+                    <div style="width:@(38 * review.Grade)px;overflow:hidden;padding:0px;max-height:38px">
+                        <div style="display:block;width:190px;">
+                            <div style="width: 38px;height:38px;float:left;"><img style="width: 38px;height:38px;" src="~/Images/AcbK4z6qi.png" /></div>
+                            <div style="width: 38px;height:38px;float:left;"><img style="width: 38px;height:38px;" src="~/Images/AcbK4z6qi.png" /></div>
+                            <div style="width: 38px;height:38px;float:left;"><img style="width: 38px;height:38px;" src="~/Images/AcbK4z6qi.png" /></div>
+                            <div style="width: 38px;height:38px;float:left;"><img style="width: 38px;height:38px;" src="~/Images/AcbK4z6qi.png" /></div>
+                            <div style="width: 38px;height:38px;float:left;"><img style="width: 38px;height:38px;" src="~/Images/AcbK4z6qi.png" /></div>
+                        </div>
+                    </div>
+                </div>
+            }
+            @if (!Model.Reviews.Where(k => k.DiaryUser.Username.Equals(User.Identity.Name)).Any() && !Model.CreatedBy.Equals(User.Identity.Name))
+            {
+                <label style="padding-left:25px;">
+                    Your review:
+                </label>
+                <p style="color:darkred;width:320px;margin-left:100px;padding-left:4px;border-left:solid;border-bottom:solid;border-width:5px;border-color:dimgray;">
+                    You haven't posted a review yet.
+                </p>
+            }
+            <label style="padding-left:25px;">
+                Reviews:
+            </label>
+            @foreach (BigFatDiary.Models.Data.Review review in Model.Reviews.Where(k => !k.DiaryUser.Username.Equals(User.Identity.Name)))
+            {
+        <div class="review">
+            <label>From:</label> <br />
+            <div class="review_element">
+                @review.DiaryUser.Username
+            </div>
+            <hr />
+            <label>Comment:</label> <br />
+            <div class="review_element">
+                @review.Comment
+            </div>
+            <hr />
+            <label>Grade:</label>
+            <div style="width:@(38 * review.Grade)px;overflow:hidden;padding:0px;max-height:38px">
+                <div style="display:block;width:190px;">
+                    <div style="width: 38px;height:38px;float:left;"><img style="width: 38px;height:38px;" src="~/Images/AcbK4z6qi.png" /></div>
+                    <div style="width: 38px;height:38px;float:left;"><img style="width: 38px;height:38px;" src="~/Images/AcbK4z6qi.png" /></div>
+                    <div style="width: 38px;height:38px;float:left;"><img style="width: 38px;height:38px;" src="~/Images/AcbK4z6qi.png" /></div>
+                    <div style="width: 38px;height:38px;float:left;"><img style="width: 38px;height:38px;" src="~/Images/AcbK4z6qi.png" /></div>
+                    <div style="width: 38px;height:38px;float:left;"><img style="width: 38px;height:38px;" src="~/Images/AcbK4z6qi.png" /></div>
+                </div>
+            </div>
+        </div>
+            }
+            @if (!Model.Reviews.Where(k => !k.DiaryUser.Username.Equals(User.Identity.Name)).Any())
+            {
+                <p style="color:darkred;width:320px;margin-left:100px;padding-left:4px;border-left:solid;border-bottom:solid;border-width:5px;border-color:dimgray;">
+                    No other reviews yet.
+                </p>
+            }
+        </div>
+    </div>
+}
+else
+{
+    <div>Recipe not found.</div>
+    <div style="width:1140px">
+        <p>
+            @Html.ActionLink("Back to List", "User/ListRecipes")
+        </p>
+    </div>
+}
+
+
+@section Scripts {
+}

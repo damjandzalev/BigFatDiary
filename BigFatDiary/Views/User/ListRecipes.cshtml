@@ -1,0 +1,84 @@
+﻿@model BigFatDiary.Models.View.ListRecipes
+
+@{
+    ViewBag.Title = "ListRecipes";
+}
+<style>
+    textarea {
+        max-width: 728px;
+        max-height: none;
+        width: 728px;
+    }
+
+    th, td {
+        border-collapse: collapse;
+        border-right: solid;
+        border-top: solid;
+        border-bottom: solid;
+        border-color: dimgray;
+        padding: 5px;
+        color: black;
+    }
+
+        th:first-child {
+            padding: 0px;
+        }
+
+        td:first-child {
+            padding: 0px;
+        }
+
+    table > tr {
+    }
+
+    thead > tr:first-child:hover {
+    }
+
+    tbody > tr:hover {
+        background-color: lightgray;
+        cursor: pointer;
+    }
+
+    hr {
+        height: 2px;
+        margin-bottom: 2px;
+        background-color: dimgray;
+    }
+
+    a:hover {
+        text-decoration-line: none;
+    }
+</style>
+<h1>List recipes</h1>
+@if (Model.IsSearch)
+{
+    <h3 style="padding-left:25px;">Search results for "@Model.SearchText"</h3>
+}
+else
+{
+    <h3 style="padding-left:25px;">List of recipes you created and bookmarks</h3>
+}
+<hr />
+<div style="height:33.6px">
+    <a href="/User/AddRecipe" style="float:left;padding-right:5px">
+        <div class="btn btn-default" style="height: 33.6px">
+            Create new
+        </div>
+    </a>
+    <a href="/User/ListRecipes" style="float:left;padding-right:5px">
+        <div class="btn btn-default" style="height: 33.6px">
+            Your recipes
+        </div>
+    </a>
+</div>
+<div style="width:1140px;border-top:solid;border-color:dimgray;max-height:600px;overflow-x:hidden;overflow-y:scroll">
+    @Html.Partial("ListRecipesTable", Model.Recipes)
+</div>
+@section scripts{
+    <script>
+        $("#recipes").DataTable();
+        function recipeDetails(item) {
+            location.href = "/User/DetailsRecipe/" + item.firstElementChild.innerText;
+        }
+    </script>
+}

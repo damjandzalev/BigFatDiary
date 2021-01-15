@@ -1,0 +1,38 @@
+﻿@model BigFatDiary.Models.View.AddReview
+
+@{
+    ViewBag.Title = "AddReview";
+}
+    <form method="post" action="AddReview">
+        @Html.AntiForgeryToken()
+        <div class="form-horizontal" style="width:940px">
+            <hr />
+            <input name="RecipeId" type="hidden" id="RecipeId" value="@Model.RecipeId" />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(model => model.Grade, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Grade, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Grade, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Comment, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Comment, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Comment, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-3">
+                    <input type="submit" value="Post" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+    </form>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

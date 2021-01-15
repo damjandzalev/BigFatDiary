@@ -1,0 +1,20 @@
+﻿@model BigFatDiary.Models.View.AddIngredient
+
+@{
+    ViewBag.Title = "AddIngredient";
+}
+
+<tr>
+    <td>
+        @using (Html.BeginCollectionItem("Ingredients"))
+        {
+            <td style="">
+                @Html.DropDownListFor(model => model.FoodStuff, new SelectList(Model.FoodStuffs, "Value", "Text"), new { Style = "width:85px;", Class= "form-control" })
+            </td>
+            <td style="width:50px">
+                @Html.EditorFor(model => model.Amount, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Amount)
+            </td>
+        }
+    </td>
+</tr>

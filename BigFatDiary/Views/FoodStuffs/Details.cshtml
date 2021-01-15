@@ -1,0 +1,101 @@
+﻿@model BigFatDiary.Models.Data.FoodStuff
+
+@{
+    ViewBag.Title = "Details";
+}
+<style>
+
+
+    hr {
+        height: 2px;
+        margin-bottom: 2px;
+        background-color: dimgray;
+    }
+
+    h3 {
+        padding-left: 25px;
+    }
+</style>
+<h1>@Model.Name details</h1>
+<h3>Content details - foodstuff</h3>
+<hr />
+
+<div style="width:1140px;display:inline-block">
+    <div style="width:1140px;">
+        <a href="/FoodStuffs">
+            <div class="btn btn-default">
+                Back to list
+            </div>
+        </a>
+    </div>
+    <div style="width:1140px;border-top:solid;border-color:dimgray;padding-top:25px;">
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.AddedBy)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.AddedBy)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Calories)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Calories)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Proteins)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Proteins)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Carbohydrates)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Carbohydrates)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Fats)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Fats)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.MeasurementUnit)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.MeasurementUnit)
+            </dd>
+
+            <dt>
+
+            </dt>
+            <dd style="margin-top:10px">
+                <a href="/FoodStuffs/Edit/@Model.Name">
+                    <div class="btn btn-default" style="font-size:larger">
+                        Edit
+                    </div>
+                </a>
+            </dd>
+        </dl>
+    </div>
+</div>
+

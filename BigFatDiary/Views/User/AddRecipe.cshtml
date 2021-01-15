@@ -1,0 +1,169 @@
+﻿@model BigFatDiary.Models.View.AddRecipe
+
+@{
+    ViewBag.Title = "AddRecipe";
+}
+
+<style>
+    th, td {
+        border-collapse: collapse;
+        border-right: solid;
+        border-top: solid;
+        border-bottom: solid;
+        border-color: dimgray;
+        padding: 5px;
+        max-width: 95px;
+        text-align: center;
+    }
+
+        th:first-child {
+            padding: 0px;
+        }
+
+        td:first-child {
+            padding: 0px;
+        }
+
+    #side {
+        overflow-y: scroll;
+        max-height: 600px;
+        height: 600px;
+        width: 200px;
+        float: left;
+        border-top: solid;
+        border-color: dimgray;
+        color: black;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+        #side::-webkit-scrollbar {
+            display: none;
+        }
+
+    #content {
+        overflow-y: scroll;
+        word-wrap: break-word;
+        max-height: 600px;
+        height: 600px;
+        width: 940px;
+        float: left;
+        border-top: solid;
+        border-left: solid;
+        border-color: dimgray;
+        color: black;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+        #content::-webkit-scrollbar {
+            display: none;
+        }
+
+    hr {
+        height: 2px;
+        margin-bottom: 2px;
+        background-color: dimgray;
+    }
+
+    textarea {
+        max-width: 728px;
+        width: 728px;
+    }
+</style>
+
+
+<h1>Add recipe</h1>
+<h3 style="padding-left:25px;">Add a new recipe to the app</h3>
+<hr />
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+    <div style="width:1140px">
+        <a href="/User/ListRecipes">
+            <div class="btn btn-default">
+                Back to list
+            </div>
+        </a>
+    </div>
+    <div id="side">
+        <div class="form-group row">
+            <div class="col-md-5 col-md-offset-1">
+                @Html.LabelFor(model => model.Portions, htmlAttributes: new { @class = "control-label" })
+            </div>
+            <div class="col-md-6">
+                @Html.EditorFor(model => model.Portions, new { htmlAttributes = new { @class = "form-control", @style = "max-width:50px;width:50px" } })
+            </div>
+        </div>
+        @Html.ValidationMessageFor(model => model.Portions, "", new { @class = "text-danger" })
+        <table id="Ingredients" style="width:190px;padding-left:5px;padding-right:5px">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th style="width:95px;text-align:center">
+                        Ingredient
+                    </th>
+                    <th style="width:95px;text-align:center">
+                        Amount
+                    </th>
+                </tr>
+            </thead>
+            <tbody style="">
+                @{
+                    foreach (var i in Model.Ingredients)
+                    {
+                        @Html.Partial("AddIngredient", i)
+                    }
+                }
+            </tbody>
+        </table>
+        <div class="form-group" style="margin:auto;padding-top:15px">
+            <div style="width:100%;">
+                <div style="margin:auto;width:135px">
+                    <input type="button" id="AddIngredient" value="Add Ingredient" class="btn btn-default" style="font-size: larger;" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="content">
+        <h3 style="padding-left:25px">Add a new recipe</h3>
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", @style = "max-width:728px;width:728px" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Description, new { @class = "form-control", @rows = 4 })
+                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <input type="submit" value="Create" class="btn btn-default" style="font-size:larger;margin-left:432px" />
+    </div>
+
+</div>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#AddIngredient").on("click", function () {
+                $.ajax({
+                    url: '@Url.Action("AddIngredient", "User")',
+                    success: function (partialView) {
+                        $('#Ingredients > tbody:last-child').append(partialView);
+                        heights();
+                    }
+                });
+            });
+        });
+    </script>
+}

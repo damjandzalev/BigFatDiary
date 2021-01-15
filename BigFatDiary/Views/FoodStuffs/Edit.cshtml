@@ -1,0 +1,107 @@
+﻿@model BigFatDiary.Models.Data.FoodStuff
+
+@{
+    ViewBag.Title = "Edit";
+}
+<style>
+
+    th, td {
+        border-collapse: collapse;
+        border-right: solid;
+        border-top: solid;
+        border-bottom: solid;
+        border-color: dimgray;
+        padding: 5px;
+        color: black;
+    }
+
+        th:first-child {
+            padding: 0px;
+        }
+
+        td:first-child {
+            padding: 0px;
+        }
+
+
+    hr {
+        height: 2px;
+        margin-bottom: 2px;
+        background-color: dimgray;
+    }
+
+    h3 {
+        padding-left: 25px;
+    }
+
+    a:hover {
+        text-decoration-line: none;
+    }
+</style>
+<h1>Edit @Model.Name</h1>
+<h3>Edit contents of foodstuff</h3>
+<hr />
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <a href="/FoodStuffs">
+            <div class="btn btn-default">
+                Back to list
+            </div>
+        </a>
+        <div style="width:1140px;border-top:solid;border-color:dimgray;padding-top:25px;">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.Name)
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Calories, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Calories, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Calories, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Proteins, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Proteins, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Proteins, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Carbohydrates, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Carbohydrates, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Carbohydrates, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Fats, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Fats, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Fats, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.MeasurementUnit, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EnumDropDownListFor(model => model.MeasurementUnit, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.MeasurementUnit, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="control-label col-md-2" style="margin-right:5px;"></div>
+            <input type="submit" value="Save" class="btn btn-default" style="font-size:larger;" />
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
