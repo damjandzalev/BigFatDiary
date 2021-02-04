@@ -307,15 +307,50 @@ namespace BigFatDiary.Controllers
         //to do
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Eat(long id)
+        public ActionResult Eat(string id)
         {
-            string amount = HttpContext.Request.Params.Get("amount");
-            double k;
-            if(double.TryParse(amount,out k))
+            if (HttpContext.Request.Params.Get("type").Equals("Recipe"))
             {
-                return RedirectToAction("Index", "User");
+                string amount = HttpContext.Request.Params.Get("amount");
+                double k;
+                if (double.TryParse(amount, out k))
+                {
+                    if (k > 0)
+                    {
+                        db.RecipeEatens.Add(new RecipeEaten()
+                        {
+                            Recipe = db.Recipes.Find(long.Parse(id)),
+                            User = db.DiaryUsers.Find(User.Identity.Name),
+                            Date = System.DateTime.Now,
+                            Amount = k
+                        });
+                    }
+                    db.SaveChanges();
+                    return RedirectToAction("Diary", "User");
+                }
+                return RedirectToAction("DetailsRecipe/" + id.ToString());
             }
-            return RedirectToAction("DetailsRecipe/"+id.ToString());
+            else
+            {
+                string amount = HttpContext.Request.Params.Get("amount");
+                double k;
+                if (double.TryParse(amount, out k))
+                {
+                    if (k > 0)
+                    {
+                        db.FoodEatens.Add(new FoodStuffEaten()
+                        {
+                            FoodStuff = db.FoodStuffs.Find(id),
+                            User = db.DiaryUsers.Find(User.Identity.Name),
+                            Date = System.DateTime.Now,
+                            Amount = k
+                        });
+                    }
+                    db.SaveChanges();
+                    return RedirectToAction("Diary", "User");
+                }
+                return RedirectToAction("Details/" + id.ToString(), "FoodStuffs");
+            }
         }
 
         [HttpPost]
@@ -383,6 +418,98 @@ namespace BigFatDiary.Controllers
                 });
                 db.SaveChanges();
                 return RedirectToAction("Index", "Home");
+            }
+            return View(Model);
+        }
+
+        public ActionResult Diary()
+        {
+            DiaryUser diaryUser = db.getDiaryUser(User.Identity.Name);
+            List<RecipeEaten> recipeEatens = db.RecipeEatens.Where(k => k.User.Username.Equals(diaryUser.Username)).AsEnumerable().ToList();
+            List<FoodStuffEaten> foodStuffEatens = db.FoodEatens.Where(k => k.User.Username.Equals(diaryUser.Username)).AsEnumerable().ToList();
+            List<UserMeasurements> userMeasurements = db.Measurements.Where(k => k.DiaryUser.Username.Equals(diaryUser.Username)).AsEnumerable().ToList();
+            recipeEatens.Sort((a, b) => a.Date.Date.CompareTo(b.Date.Date));
+            foodStuffEatens.Sort((a, b) => a.Date.Date.CompareTo(b.Date.Date));
+            userMeasurements.Sort((a, b) => a.DateTime.Date.CompareTo(b.DateTime.Date));
+            DateTime date = System.DateTime.Now.Date;
+            Diary Model = new Diary()
+            {
+                hasMeasurements = false
+            };
+            if (userMeasurements.Count() > 0)
+            {
+                List<DiaryDayDetails> diaryDayDetailsList = new List<DiaryDayDetails>();
+                DateTime start = userMeasurements.First().DateTime.Date;
+                double weight = userMeasurements.First().Weight;
+                double height = userMeasurements.First().Height;
+                double activityLevel = userMeasurements.First().ActivityLevel;
+                while (start <= date)
+                {
+                    bool isWeightMeasured = false;
+                    if (userMeasurements.Where(k => k.DateTime.Date.CompareTo(start) == 0).Any())
+                    {
+                        weight = userMeasurements.Where(k => k.DateTime.Date.CompareTo(start) == 0).First().Weight;
+                        height = userMeasurements.Where(k => k.DateTime.Date.CompareTo(start) == 0).First().Height;
+                        activityLevel = userMeasurements.Where(k => k.DateTime.Date.CompareTo(start) == 0).First().ActivityLevel;
+                        isWeightMeasured = true;
+                    }
+                    double caloriesEaten = 0;
+                    foreach (RecipeEaten k in recipeEatens.Where(k => k.Date.Date.CompareTo(start) == 0))
+                    {
+                        caloriesEaten += k.Amount * k.Recipe.Calories;
+                    }
+                    foreach (FoodStuffEaten k in foodStuffEatens.Where(k => k.Date.Date.CompareTo(start) == 0))
+                    {
+                        caloriesEaten += k.Amount * k.FoodStuff.Calories;
+                    }
+                    double caloriesToMaintain = 0;
+                    if (diaryUser.Gender.Equals(Gender.MALE))
+                    {
+                        caloriesToMaintain = 10 * weight + 6.25 * height - 5 * (date.Year - diaryUser.Birthday.Year) + 5;
+                    }
+                    else
+                    {
+                        caloriesToMaintain = 10 * weight + 6.25 * height - 5 * (date.Year - diaryUser.Birthday.Year) - 161;
+                    }
+                    caloriesToMaintain *= activityLevel;
+                    if (caloriesEaten == 0)
+                        caloriesEaten = caloriesToMaintain;
+                    double difference = caloriesToMaintain - caloriesEaten;
+                    DiaryDayDetails diaryDayDetails = new DiaryDayDetails
+                    {
+                        caloriesEaten = caloriesEaten,
+                        caloriesToMaintain = caloriesToMaintain,
+                        difference = difference,
+                        kilograms = weight,
+                        DateTime = start,
+                        weightMeasured = isWeightMeasured
+                    };
+                    diaryDayDetailsList.Add(diaryDayDetails);
+                    weight -= difference / 7700;
+                    start = start.Date.AddDays(1);
+                }
+                Model.hasMeasurements = true;
+                Model.DayDetails = diaryDayDetailsList;
+            }
+            return View(Model);
+        }
+
+        public ActionResult DiaryUser()
+        {
+            var Model = db.getDiaryUser(User.Identity.Name);
+            return View(Model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult DiaryUser(DiaryUser Model)
+        {
+            if (ModelState.IsValid)
+            {
+                db.DiaryUsers.Find(User.Identity.Name).Birthday = Model.Birthday;
+                db.DiaryUsers.Find(User.Identity.Name).Gender = Model.Gender;
+                db.SaveChanges();
+                return RedirectToAction("Diary", "User");
             }
             return View(Model);
         }

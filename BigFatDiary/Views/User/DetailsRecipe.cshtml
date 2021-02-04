@@ -145,6 +145,7 @@
             <form method="post" action="/User/Eat/@Model.Id" style="float:right">
                 @Html.AntiForgeryToken()
                 <div>
+                    <input id="type" name="type" type="hidden" value="Recipe" />
                     <input id="amount" name="amount" type="text" class="form-control" style="max-width: 320px; width: 320px; height: 33.6px; float: left" placeholder="Number of portions(decimal values accepted)" />
                     <input id="eatSubmit" type="submit" class="btn btn-default" style="height:33.6px;float:left" value="Eat" />
                 </div>

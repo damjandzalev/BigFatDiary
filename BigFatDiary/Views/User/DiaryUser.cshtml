@@ -1,0 +1,126 @@
+﻿@model BigFatDiary.Models.Data.DiaryUser
+
+@{
+    ViewBag.Title = "DiaryUser";
+}
+<style>
+    th, td {
+        border-collapse: collapse;
+        border-right: solid;
+        border-top: solid;
+        border-bottom: solid;
+        border-color: dimgray;
+        padding: 5px;
+        color: black;
+    }
+
+        th:first-child {
+            padding: 0px;
+        }
+
+        td:first-child {
+            padding: 0px;
+        }
+
+    table > tr {
+    }
+
+    thead > tr:first-child:hover {
+    }
+
+    tbody > tr:hover {
+        background-color: lightgray;
+        cursor: pointer;
+    }
+
+    hr {
+        height: 2px;
+        margin-bottom: 2px;
+        background-color: dimgray;
+    }
+
+    a:hover {
+        text-decoration-line: none;
+    }
+
+    #content {
+        overflow-y: scroll;
+        word-wrap: break-word;
+        max-height: 600px;
+        height: 600px;
+        width: 1140px;
+        float: left;
+        border-top: solid;
+        border-left: solid;
+        border-color: dimgray;
+        color: black;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    #button {
+        width: 1140px;
+        float: left;
+        border-bottom: solid;
+        border-color: dimgray;
+        color: black;
+    }
+</style>
+<h1>Diary User</h1>
+<h3 style="padding-left:25px;">@Model.Username</h3>
+<hr />
+<div id="button">
+    <a href="Diary">
+        <div class="btn btn-default">
+            Back
+        </div>
+    </a>
+</div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal" style="margin-left:350px;">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Username)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Birthday, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Birthday, new { htmlAttributes = new { @class = "form-control datepicker" } })
+                @Html.ValidationMessageFor(model => model.Birthday, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Gender, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EnumDropDownListFor(model => model.Gender, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Gender, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<link href="~/Content/themes/base/jquery-ui.min.css" rel="stylesheet" />
+@section scripts{
+    <script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $(".datepicker").datepicker({
+                dateFormat: "dd-mm-yy",
+                changemonth: true,
+                changeyear: true,
+                minDate: -365000,
+                maxDate: -3650
+            });
+        });
+    </script>
+}

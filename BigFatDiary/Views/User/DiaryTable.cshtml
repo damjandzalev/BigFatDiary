@@ -1,0 +1,66 @@
+﻿@model IEnumerable<BigFatDiary.Models.View.DiaryDayDetails>
+<table id="diaryTable" class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.DateTime.Date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.caloriesToMaintain)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.caloriesEaten)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.difference)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.kilograms)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.weightMeasured)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Reverse())
+        {
+
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateTime)
+                </td>
+                <td>
+                    @{
+                        var num1 = String.Format("{0:0.00}", item.caloriesToMaintain);
+                        @Html.DisplayFor(modelItem => num1)
+                    }
+                </td>
+                <td>
+                    @{
+                        var num2 = String.Format("{0:0.00}", item.caloriesEaten);
+                        @Html.DisplayFor(modelItem => num2)
+                    }
+                </td>
+                <td>
+                    @{
+                        var num3 = String.Format("{0:0.00}", item.difference);
+                        @Html.DisplayFor(modelItem => num3)
+                    }
+                </td>
+                <td>
+                    @{
+                        var num4 = String.Format("{0:0.00}", item.kilograms);
+                        @Html.DisplayFor(modelItem => num4)
+                    }
+                </td>
+                <td>
+                    @if (item.weightMeasured)
+                    {
+                        <p>YES</p>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

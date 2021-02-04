@@ -1,0 +1,83 @@
+﻿@model BigFatDiary.Models.View.Diary
+@{
+    ViewBag.Title = "Diary";
+}
+<style>
+    th, td {
+        border-collapse: collapse;
+        border-right: solid;
+        border-top: solid;
+        border-bottom: solid;
+        border-color: dimgray;
+        padding: 5px;
+        color: black;
+    }
+
+        th:first-child {
+            padding: 0px;
+        }
+
+        td:first-child {
+            padding: 0px;
+        }
+
+    table > tr {
+    }
+
+    thead > tr:first-child:hover {
+    }
+
+    tbody > tr:hover {
+        background-color: lightgray;
+        cursor: pointer;
+    }
+
+    hr {
+        height: 2px;
+        margin-bottom: 2px;
+        background-color: dimgray;
+    }
+
+    a:hover {
+        text-decoration-line: none;
+    }
+
+    #content {
+        overflow-y: scroll;
+        word-wrap: break-word;
+        max-height: 600px;
+        height: 600px;
+        width: 1140px;
+        float: left;
+        border-top: solid;
+        border-left: solid;
+        border-color: dimgray;
+        color: black;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+</style>
+<h1>Diary</h1>
+<h3 style="padding-left:25px;">Your caloric diary</h3>
+<hr />
+<div style="height:33.6px">
+    <a href="DiaryUser">
+        <div class="btn btn-default">
+            User details
+        </div>
+    </a>
+</div>
+<div id="content">
+    @if (Model.hasMeasurements == false)
+    {
+        <p>Enter your measurements in the <a href="AddMeasurements">Measurements</a> tab to start counting calories.</p>
+    }
+    else
+    {
+        @Html.Partial("DiaryTable", Model.DayDetails)
+    }
+</div>
+@section scripts{
+    <script>
+    </script>
+}

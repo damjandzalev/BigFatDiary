@@ -1,0 +1,116 @@
+﻿@model BigFatDiary.Models.View.AdministratorUser
+
+@{
+    ViewBag.Title = "EditUser";
+}
+<style>
+
+    th, td {
+        border-collapse: collapse;
+        border-right: solid;
+        border-top: solid;
+        border-bottom: solid;
+        border-color: dimgray;
+        padding: 5px;
+        color: black;
+    }
+
+        th:first-child {
+            padding: 0px;
+        }
+
+        td:first-child {
+            padding: 0px;
+        }
+
+    table > tr {
+    }
+
+    thead > tr:first-child:hover {
+    }
+
+    tbody > tr:hover {
+        background-color: lightgray;
+        cursor: pointer;
+    }
+
+    hr {
+        height: 2px;
+        margin-bottom: 2px;
+        background-color: dimgray;
+    }
+
+    h3 {
+        padding-left: 25px;
+    }
+
+    a:hover {
+        text-decoration-line: none;
+    }
+    #button {
+        width: 1140px;
+        float: left;
+        border-bottom: solid;
+        border-color: dimgray;
+        color: black;
+    }
+</style>
+<h1>Edit user</h1>
+<h3 style="padding-left:25px">@Model.Username</h3>
+<hr />
+<div id="button">
+    <a href="~/Administrator/ListUsers">
+        <div class="btn btn-default">
+            Back
+        </div>
+    </a>
+</div>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal" style="margin-left:350px">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Id)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Username, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Model.Username
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Model.Email
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Role, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @{
+                    if (User.IsInRole("MasterAdmin"))
+                    {
+                        @Html.DropDownListFor(model => model.Role, new SelectList(new List<string>() { "Administrator", "Moderator", "User" }))
+                    }
+                    else
+                    {
+                        @Html.DropDownListFor(model => model.Role, new SelectList(new List<string>() { "Moderator", "User" }))
+                    }
+                }
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Home", "Administrator")
+</div>

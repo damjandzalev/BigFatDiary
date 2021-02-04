@@ -17,16 +17,24 @@
     }
 </style>
 <h1>@Model.Name details</h1>
-<h3>Content details - foodstuff</h3>
+<h3 style="padding-left: 25px;">Content details - foodstuff</h3>
 <hr />
 
 <div style="width:1140px;display:inline-block">
-    <div style="width:1140px;">
-        <a href="/FoodStuffs">
+    <div style="width:1140px;height:33.6px">
+        <a href="/FoodStuffs" style="float:left;padding-right:5px">
             <div class="btn btn-default">
                 Back to list
             </div>
         </a>
+        <form method="post" action="/User/Eat/@Model.Name" style="float:right">
+            @Html.AntiForgeryToken()
+            <div>
+                <input id="type" name="type" type="hidden" value="FoodStuff" />
+                <input id="amount" name="amount" type="text" class="form-control" style="max-width: 320px; width: 320px; height: 33.6px; float: left" placeholder="Number of portions(decimal values accepted)" />
+                <input id="eatSubmit" type="submit" class="btn btn-default" style="height:33.6px;float:left" value="Eat" />
+            </div>
+        </form>
     </div>
     <div style="width:1140px;border-top:solid;border-color:dimgray;padding-top:25px;">
         <dl class="dl-horizontal">

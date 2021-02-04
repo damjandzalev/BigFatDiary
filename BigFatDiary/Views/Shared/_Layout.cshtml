@@ -33,6 +33,10 @@
                     </li>
                     <li>@Html.ActionLink("Foods", "Index", "FoodStuffs")</li>
                     <li>@Html.ActionLink("Measurements", "AddMeasurements", "User")</li>
+                    @if (User.IsInRole("Administrator"))
+                    {
+                        <li>@Html.ActionLink("List users", "ListUsers", "Administrator")</li>
+                    }
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>
